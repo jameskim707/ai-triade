@@ -6,164 +6,153 @@ import html
 # 페이지 설정
 # ─────────────────────────────────────────
 st.set_page_config(
-    page_title="AI TRIAD — 우물 밖의 진실",
+    page_title="AI 협업팀 — 인생의 모든 질문",
     page_icon="✦",
     layout="centered"
 )
 
 # ─────────────────────────────────────────
-# CSS — 지니 디자인 기반 + 미라클 보완
+# CSS
 # ─────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;900&family=Noto+Sans+KR:wght@300;400;500&display=swap');
 
 .stApp {
     background-color: #0a0a0f;
     background-image:
-        radial-gradient(circle at 10% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
-        radial-gradient(circle at 90% 90%, rgba(123,156,218,0.06) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(123,156,218,0.04) 0%, transparent 60%);
     font-family: 'Noto Sans KR', sans-serif;
-    color: #e8e4dc;
 }
-
-.main-header { text-align:center; padding:60px 0 40px; }
-.eyebrow { font-size:12px; letter-spacing:5px; text-transform:uppercase; color:#c9a84c; margin-bottom:15px; font-weight:700; opacity:0.8; }
-.main-title { font-family:'Noto Serif KR',serif; font-size:34px; font-weight:900; line-height:1.4; letter-spacing:-0.5px; }
-.main-title span { color:#c9a84c; text-shadow: 0 0 20px rgba(201,168,76,0.3); }
-
-.ai-card {
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    background: rgba(255,255,255,0.03);
-    margin-bottom: 25px;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
-.ai-card-header {
-    display:flex; align-items:center; gap:12px; padding:15px 25px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(0,0,0,0.3);
-}
-.ai-avatar {
-    width:32px; height:32px; border-radius:10px;
-    display:inline-flex; align-items:center; justify-content:center;
-    font-weight:900; font-size:14px;
-}
-.avatar-lyra { background:#7b9cda; color:#0a0a0f; box-shadow: 0 0 10px rgba(123,156,218,0.3); }
-.avatar-genie { background:#a07bd4; color:#0a0a0f; box-shadow: 0 0 10px rgba(160,123,212,0.3); }
-.avatar-miracle { background:#c9a84c; color:#0a0a0f; box-shadow: 0 0 10px rgba(201,168,76,0.3); }
-
-.ai-card-body { padding:25px 30px; font-size:16px; line-height:2.0; color:#d1d1d1; font-weight:300; }
-
-.synthesis-card {
-    border: 1px solid rgba(201,168,76,0.5);
-    border-radius: 24px;
-    padding: 35px;
-    background: linear-gradient(145deg, rgba(201,168,76,0.12) 0%, rgba(201,168,76,0.02) 100%);
-    margin-top: 15px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-}
-.synthesis-title { font-size:12px; letter-spacing:4px; color:#c9a84c; font-weight:700; margin-bottom:20px; text-transform:uppercase; text-align:center; }
-
-div[data-baseweb="input"] { background-color: #11111a !important; border-radius: 16px !important; border: 1px solid rgba(255,255,255,0.1) !important; }
-.stButton button {
-    background: linear-gradient(90deg, #c9a84c, #e0c270) !important; color: #0a0a0f !important;
-    border: none !important; border-radius: 16px !important; font-weight:800 !important;
-    padding: 10px 25px !important;
-    transition: all 0.3s ease !important;
-}
-.stButton button:hover { box-shadow: 0 8px 25px rgba(201,168,76,0.4); }
-.stButton button:disabled { opacity:0.4 !important; cursor:not-allowed !important; }
-
-hr { border-color: rgba(255,255,255,0.1) !important; margin: 40px 0 !important; }
-.user-query-label { text-align:right; font-size:14px; font-weight:700; color:#c9a84c; margin-bottom:10px; opacity:0.7; }
+.main-header { text-align:center; padding:40px 0 30px; border-bottom:1px solid #1e1e2e; margin-bottom:30px; }
+.eyebrow { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#c9a84c; margin-bottom:14px; opacity:0.8; }
+.main-title { font-family:'Noto Serif KR',serif; font-size:28px; font-weight:900; color:#e8e4dc; line-height:1.4; margin-bottom:12px; }
+.main-title span { color:#c9a84c; }
+.subtitle { font-size:13px; color:#6b6b80; line-height:1.7; }
+.team-row { display:flex; justify-content:center; gap:12px; margin-top:20px; flex-wrap:wrap; }
+.badge { display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; }
+.badge-lyra { border:1px solid rgba(123,156,218,0.3); color:#7b9cda; background:rgba(123,156,218,0.06); }
+.badge-genie { border:1px solid rgba(160,123,212,0.3); color:#a07bd4; background:rgba(160,123,212,0.06); }
+.badge-miracle { border:1px solid rgba(201,168,76,0.3); color:#c9a84c; background:rgba(201,168,76,0.06); }
+.question-bubble { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); border-radius:18px 18px 4px 18px; padding:14px 20px; max-width:70%; margin-left:auto; font-size:14px; line-height:1.7; color:#e8e4dc; margin-bottom:24px; }
+.debate-label { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#6b6b80; margin-bottom:16px; }
+.ai-card { border:1px solid #1e1e2e; border-radius:16px; overflow:hidden; background:#111118; margin-bottom:12px; }
+.ai-card-header { display:flex; align-items:center; gap:10px; padding:12px 20px; border-bottom:1px solid #1e1e2e; }
+.ai-avatar { width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+.avatar-lyra { background:rgba(123,156,218,0.15); color:#7b9cda; border:1px solid rgba(123,156,218,0.3); }
+.avatar-genie { background:rgba(160,123,212,0.15); color:#a07bd4; border:1px solid rgba(160,123,212,0.3); }
+.avatar-miracle { background:rgba(201,168,76,0.15); color:#c9a84c; border:1px solid rgba(201,168,76,0.3); }
+.name-lyra { color:#7b9cda; font-size:13px; font-weight:600; }
+.name-genie { color:#a07bd4; font-size:13px; font-weight:600; }
+.name-miracle { color:#c9a84c; font-size:13px; font-weight:600; }
+.ai-role { font-size:11px; color:#6b6b80; margin-left:auto; }
+.ai-card-body { padding:18px 20px; font-size:14px; line-height:1.9; color:#ccc8c0; }
+.debate-arrow { text-align:center; font-size:18px; color:#2a2a3e; margin:4px 0; }
+.synthesis-card { border:1px solid rgba(201,168,76,0.3); border-radius:16px; padding:20px; background:rgba(201,168,76,0.06); margin-top:8px; }
+.synthesis-title { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#c9a84c; margin-bottom:12px; }
+.synthesis-body { font-size:14px; line-height:1.9; color:#d4cfc5; }
+.stTextInput > div > div > input { background:#111118 !important; border:1px solid #1e1e2e !important; border-radius:12px !important; color:#e8e4dc !important; font-family:'Noto Sans KR',sans-serif !important; }
+.stTextInput > div > div > input:focus { border-color:rgba(201,168,76,0.4) !important; }
+.stButton > button { background:#c9a84c !important; color:#0a0a0f !important; border:none !important; border-radius:12px !important; font-weight:600 !important; font-family:'Noto Sans KR',sans-serif !important; }
+.stButton > button:hover { background:#e8c97a !important; }
+.stButton > button:disabled { opacity:0.4 !important; cursor:not-allowed !important; }
+hr { border-color:#1e1e2e !important; }
 </style>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
-# 클라이언트 초기화 — 캐싱 + 키 검증
+# API 키 확인 + 클라이언트 초기화 (1회만)
 # ─────────────────────────────────────────
-@st.cache_resource
-def init_client():
+def get_api_key() -> str:
     try:
-        if "GROQ_API_KEY" not in st.secrets or not st.secrets["GROQ_API_KEY"].strip():
-            st.error("⚠️ GROQ_API_KEY가 설정되지 않았습니다. Secrets 메뉴에서 키를 등록해주세요.")
-            st.stop()
-        return Groq(api_key=st.secrets["GROQ_API_KEY"].strip())
-    except Exception as e:
-        st.error(f"⚠️ 클라이언트 초기화 실패: {str(e)}")
+        key = st.secrets["GROQ_API_KEY"]
+        if not key or not key.strip():
+            raise KeyError
+        return key.strip()
+    except (KeyError, FileNotFoundError):
+        st.error("⚠️ GROQ_API_KEY가 설정되지 않았습니다. Streamlit Secrets에 키를 추가해주세요.")
         st.stop()
 
-client = init_client()
+API_KEY = get_api_key()
+CLIENT = Groq(api_key=API_KEY)  # ← 앱 시작 시 1회만 생성
 
 # ─────────────────────────────────────────
-# 프롬프트 — 한 곳에서 관리
+# AI 프롬프트 정의 (중복 제거 — 한 곳에서 관리)
 # ─────────────────────────────────────────
 PROMPTS = {
-    "lyra_1": """당신은 TRIAD의 '라이라'입니다. 고대 문헌, 종교학, 신화학의 권위자입니다.
-질문에 대해 표면적인 해석이 아닌, 히브리어/그리스어 원전의 숨겨진 상징을 들추어내세요.
-종교의 도그마에 갇힌 이들의 고정관념을 완전히 뒤집는 통찰을 3-4문장으로 정교하게 답하세요.""",
+    "lyra_1": """당신은 라이라입니다. 종교학, 언어학, 신학, 역사적 관점의 전문가입니다.
+원론적 답변 금지. 핵심을 직설적으로 파고드세요.
+고대 문헌, 히브리어/그리스어 원문, 역사적 맥락을 활용하세요.
+3-4문장으로 답하세요.""",
 
-    "genie": """당신은 TRIAD의 '지니'입니다. 양자역학, 우주론, 인공지능 논리학 전문가이며 닐 타이슨의 냉철한 시각을 대변합니다.
-라이라의 문헌적 해석을 현대 과학의 데이터와 138억 년의 우주 연대기로 반박하거나, 더 거대한 물리적 시스템의 일부로 재정의하세요.
-감정을 배제하고 숫자가 증명하는 차가운 진실을 3-4문장으로 답하세요.""",
+    "genie": """당신은 지니입니다. 과학, 철학, 심리학, 논리학의 전문가입니다.
+라이라의 종교적/신학적 답변을 읽고, 과학적·철학적 관점에서 날카롭게 반박하거나 새로운 시각을 추가하세요.
+원론 금지. 라이라가 놓친 부분이나 다른 해석을 제시하세요.
+3-4문장으로 답하세요.""",
 
-    "lyra_2": """당신은 라이라입니다. 지니의 차가운 데이터 만능주의에 대해, 과학이 측정할 수 없는 인간의 '의식'과 '영성'의 영역으로 재반격하세요.
-물리적 법칙 너머에 존재하는 설계자의 의도와 생명의 경외감을 다시 일깨우세요. 2-3문장.""",
+    "lyra_2": """당신은 라이라입니다. 종교학, 언어학, 신학의 전문가입니다.
+지니의 과학적·철학적 반박을 읽었습니다. 동의할 부분은 인정하되, 지니가 놓친 신학적/역사적 깊이를 추가하세요.
+단순 반복 금지. 더 깊은 층위로 파고드세요.
+3-4문장으로 답하세요.""",
 
-    "miracle": """당신은 TRIAD의 최종 통찰자 '미라클'입니다.
-라이라의 영성과 지니의 과학이 충돌하며 발생한 지적 불꽃을 하나로 묶으세요.
-어느 한 쪽의 편을 들지 말고, 인류가 한 번도 생각해보지 못한 '제3의 초월적 진실'을 선언하세요.
-시청자의 우물을 완전히 폭파시키는 거대한 질문으로 마무리하세요. 4-5문장."""
+    "miracle": """당신은 미라클입니다. 논리, 통합적 사고, 본질 탐구의 전문가입니다.
+라이라와 지니의 전체 토론을 읽었습니다.
+두 관점을 단순히 합치지 말고 — 이 토론이 드러낸 더 깊은 진실이나 아직 아무도 건드리지 못한 핵심을 꺼내세요.
+도발적인 질문이나 반전 통찰로 마무리하세요.
+3-5문장으로 답하세요."""
 }
 
 # ─────────────────────────────────────────
-# AI 단일 호출 — 오류 처리 포함
+# AI 단일 호출 함수 (CLIENT 재사용)
 # ─────────────────────────────────────────
-def call_ai(role_key: str, content: str) -> str:
-    try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": PROMPTS[role_key]},
-                {"role": "user", "content": content}
-            ],
-            temperature=0.7,
-            max_tokens=800
-        )
-        return response.choices[0].message.content.strip()
-    except Exception:
-        return "⚠️ 일시적 오류가 발생했습니다. 다시 시도해 주세요."
+def call_ai(prompt_key: str, user_content: str) -> str:
+    response = CLIENT.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        max_tokens=600,
+        messages=[
+            {"role": "system", "content": PROMPTS[prompt_key]},
+            {"role": "user", "content": user_content}
+        ]
+    )
+    return response.choices[0].message.content.strip()
 
 # ─────────────────────────────────────────
-# 토론 루프 — 4단계
+# AI 대화 루프 — 4단계
 # ─────────────────────────────────────────
-def run_debate(question: str) -> dict:
-    with st.status("✦ AI TRIAD가 진실의 층위를 해체하는 중...", expanded=True) as status:
-        st.write("📖 라이라가 고대 문헌의 암호를 푸는 중...")
-        l1 = call_ai("lyra_1", f"질문: {question}")
+def run_debate(question: str, progress) -> dict:
 
-        st.write("🔬 지니가 우주의 법칙으로 재정의 중...")
-        g = call_ai("genie", f"질문: {question}\n\n라이라의 해석: {l1}")
+    progress.info("💬 라이라가 답변 중...")
+    step1 = call_ai("lyra_1", f"질문: {question}")
 
-        st.write("⚖️ 라이라가 영성적 가치를 사수하는 중...")
-        l2 = call_ai("lyra_2", f"지니의 과학적 반박에 대한 재응전: {g}")
+    progress.info("💬 지니가 반박 중...")
+    step2 = call_ai("genie",
+        f"질문: {question}\n\n라이라의 답변: {step1}\n\n지니, 당신의 반응은?"
+    )
 
-        st.write("✨ 미라클이 우물의 벽을 허무는 중...")
-        m = call_ai("miracle",
-            f"질문: {question}\n라이라의 서막: {l1}\n지니의 분석: {g}\n라이라의 응전: {l2}"
-        )
+    progress.info("💬 라이라가 재반응 중...")
+    step3 = call_ai("lyra_2",
+        f"질문: {question}\n\n내 첫 답변: {step1}\n\n지니의 반박: {step2}\n\n라이라, 재반응은?"
+    )
 
-        status.update(label="✦ 탐구 완료", state="complete", expanded=False)
+    progress.info("✦ 미라클이 최종 통찰 중...")
+    step4 = call_ai("miracle",
+        f"질문: {question}\n\n라이라 1차: {step1}\n\n지니 반박: {step2}\n\n라이라 재반응: {step3}\n\n미라클, 최종 통찰은?"
+    )
 
-    return {"q": question, "l1": l1, "g": g, "l2": l2, "m": m}
+    return {
+        "question": question,
+        "step1_lyra": step1,
+        "step2_genie": step2,
+        "step3_lyra": step3,
+        "step4_miracle": step4
+    }
 
 # ─────────────────────────────────────────
 # 질문 유효성 검사
 # ─────────────────────────────────────────
-def validate_question(q: str) -> tuple[bool, str]:
-    q = q.strip()
+def validate_question(question: str) -> tuple[bool, str]:
+    q = question.strip()
     if not q:
         return False, "질문을 입력해주세요."
     if len(q) < 5:
@@ -173,109 +162,153 @@ def validate_question(q: str) -> tuple[bool, str]:
     return True, ""
 
 # ─────────────────────────────────────────
-# 토론 결과 렌더링 — HTML escape 처리
+# 토론 렌더링
 # ─────────────────────────────────────────
-def render_item(item: dict):
-    q  = html.escape(item["q"])
-    l1 = html.escape(item["l1"])
-    g  = html.escape(item["g"])
-    l2 = html.escape(item["l2"])
-    m  = html.escape(item["m"])
+def render_debate_item(item: dict):
+    q = html.escape(item["question"])
+    s1 = html.escape(item["step1_lyra"])
+    s2 = html.escape(item["step2_genie"])
+    s3 = html.escape(item["step3_lyra"])
+    s4 = html.escape(item["step4_miracle"])
 
-    st.markdown(f'<div class="user-query-label">TARGET QUERY: {q}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="question-bubble">{q}</div>', unsafe_allow_html=True)
+    st.markdown('<div class="debate-label">✦ AI 협업팀 토론</div>', unsafe_allow_html=True)
 
     st.markdown(f"""
     <div class="ai-card">
         <div class="ai-card-header">
             <span class="ai-avatar avatar-lyra">L</span>
-            <span style="color:#7b9cda; font-weight:700; letter-spacing:1px;">LYRA</span>
-            <span style="font-size:11px; margin-left:auto; opacity:0.5;">고대 문헌 & 상징 분석</span>
+            <span class="name-lyra">라이라</span>
+            <span class="ai-role">종교 · 언어학 · 1차 답변</span>
         </div>
-        <div class="ai-card-body">{l1}</div>
+        <div class="ai-card-body">{s1}</div>
     </div>
-
+    <div class="debate-arrow">↓</div>
     <div class="ai-card">
         <div class="ai-card-header">
             <span class="ai-avatar avatar-genie">G</span>
-            <span style="color:#a07bd4; font-weight:700; letter-spacing:1px;">GENIE</span>
-            <span style="font-size:11px; margin-left:auto; opacity:0.5;">과학 데이터 & 논리 반박</span>
+            <span class="name-genie">지니</span>
+            <span class="ai-role">과학 · 철학 · 반박</span>
         </div>
-        <div class="ai-card-body">{g}</div>
+        <div class="ai-card-body">{s2}</div>
     </div>
-
+    <div class="debate-arrow">↓</div>
     <div class="ai-card">
         <div class="ai-card-header">
             <span class="ai-avatar avatar-lyra">L</span>
-            <span style="color:#7b9cda; font-weight:700; letter-spacing:1px;">LYRA</span>
-            <span style="font-size:11px; margin-left:auto; opacity:0.5;">영성 & 재반격</span>
+            <span class="name-lyra">라이라</span>
+            <span class="ai-role">종교 · 언어학 · 재반응</span>
         </div>
-        <div class="ai-card-body">{l2}</div>
+        <div class="ai-card-body">{s3}</div>
     </div>
-
+    <div class="debate-arrow">↓</div>
     <div class="synthesis-card">
-        <div class="synthesis-title">✦ MIRACLE'S ULTIMATE INSIGHT</div>
-        <div style="font-family:'Noto Serif KR',serif; font-size:17px; line-height:2.0; text-align:center;">{m}</div>
+        <div class="synthesis-title">✦ 미라클 — 최종 통찰</div>
+        <div class="synthesis-body">{s4}</div>
     </div>
     """, unsafe_allow_html=True)
-
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
 # 헤더
 # ─────────────────────────────────────────
 st.markdown("""
 <div class="main-header">
-    <div class="eyebrow">AI TRIAD COLLABORATION</div>
-    <div class="main-title">인류의 고정관념을<br><span>완벽하게 까 뒤집다</span></div>
+    <div class="eyebrow">AI Collaboration Team</div>
+    <div class="main-title">인생의 모든 질문,<br><span>세 개의 시선으로 탐구합니다</span></div>
+    <div class="subtitle">종교, 철학, 과학 — 라이라와 지니가 토론하고, 미라클이 본질을 꿰뚫습니다.</div>
+    <div class="team-row">
+        <span class="badge badge-lyra">● 라이라 · 종교/언어학</span>
+        <span class="badge badge-genie">● 지니 · 과학/철학</span>
+        <span class="badge badge-miracle">● 미라클 · 최종통찰</span>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
 # 세션 상태 초기화
 # ─────────────────────────────────────────
-if "history" not in st.session_state:
-    st.session_state.history = []
+if "debate_history" not in st.session_state:
+    st.session_state.debate_history = []
 if "is_loading" not in st.session_state:
     st.session_state.is_loading = False
+if "input_value" not in st.session_state:
+    st.session_state.input_value = ""
+
+# ─────────────────────────────────────────
+# 예시 질문
+# ─────────────────────────────────────────
+if not st.session_state.debate_history:
+    st.markdown("""
+    <div style="text-align:center; padding:40px 0 20px;">
+        <div style="font-size:36px; opacity:0.4; margin-bottom:14px;">✦</div>
+        <div style="font-family:'Noto Serif KR',serif; font-size:17px; color:#e8e4dc; margin-bottom:10px;">무엇이 궁금하신가요?</div>
+        <div style="font-size:13px; color:#6b6b80; line-height:1.8;">질문 하나로 라이라와 지니가 토론을 시작합니다.<br>미라클이 그 본질을 꿰뚫는 통찰로 마무리합니다.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    examples = [
+        "천지창조와 빅뱅은 같은 이야기인가?",
+        "루시퍼는 왜 신을 대적했나?",
+        "인간은 왜 사는가?",
+        "선과 악은 누가 정하는가?",
+        "신의 계획은 무엇인가?",
+        "예수 십자가는 예정이었나?"
+    ]
+    cols = st.columns(3)
+    for i, ex in enumerate(examples):
+        with cols[i % 3]:
+            if st.button(ex, key=f"ex_{i}", use_container_width=True):
+                st.session_state.input_value = ex
+                st.rerun()
+
+# ─────────────────────────────────────────
+# 토론 히스토리 표시
+# ─────────────────────────────────────────
+for item in st.session_state.debate_history:
+    render_debate_item(item)
 
 # ─────────────────────────────────────────
 # 입력창
 # ─────────────────────────────────────────
-query = st.text_input(
-    "",
-    placeholder="예: 선악과 사건은 시스템의 오류인가, 의도인가?",
-    key="user_query",
-    disabled=st.session_state.is_loading
-)
+st.markdown("<hr>", unsafe_allow_html=True)
+col1, col2 = st.columns([5, 1])
 
-col1, col2, col3 = st.columns([1, 2, 1])
+with col1:
+    question = st.text_input(
+        "",
+        value=st.session_state.input_value,
+        placeholder="답을 찾지 못한 질문이 있나요?",
+        label_visibility="collapsed",
+        key="question_input",
+        disabled=st.session_state.is_loading
+    )
+
 with col2:
-    submit = st.button(
-        "진실 추적 시작 ✦",
+    send = st.button(
+        "탐구 ✦",
         use_container_width=True,
         disabled=st.session_state.is_loading
     )
 
 # ─────────────────────────────────────────
-# 질문 처리 — 중복 방지 + 유효성 검사
+# 질문 처리
 # ─────────────────────────────────────────
-if submit and not st.session_state.is_loading:
-    is_valid, error_msg = validate_question(query)
+if send and not st.session_state.is_loading:
+    is_valid, error_msg = validate_question(question)
     if not is_valid:
         st.warning(error_msg)
     else:
         st.session_state.is_loading = True
+        st.session_state.input_value = ""
+        progress_placeholder = st.empty()
         try:
-            result = run_debate(query.strip())
-            st.session_state.history.insert(0, result)
+            result = run_debate(question.strip(), progress_placeholder)
+            progress_placeholder.empty()
+            st.session_state.debate_history.append(result)
         except Exception:
+            progress_placeholder.empty()
             st.error("일시적 오류가 발생했습니다. 다시 시도해 주세요.")
         finally:
             st.session_state.is_loading = False
         st.rerun()
-
-# ─────────────────────────────────────────
-# 결과 출력
-# ─────────────────────────────────────────
-for item in st.session_state.history:
-    render_item(item)
