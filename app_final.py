@@ -248,7 +248,7 @@ if not st.session_state.debate_history:
     """, unsafe_allow_html=True)
 
     examples = [
-        "천지창조는 빅뱅에서 시작됐나?",
+        "천지창조는 정말 6일인가?",
         "루시퍼는 왜 신을 대적했나?",
         "선악과는 무엇인가?",
         "선과 악은 누가 정하는가?",
