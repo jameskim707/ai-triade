@@ -128,7 +128,7 @@ def call_ai(prompt_key: str, user_content: str) -> str:
     system = PROMPTS[prompt_key]
     for attempt in range(3):
         response = CLIENT.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             max_tokens=600,
             messages=[
                 {"role": "system", "content": system},
