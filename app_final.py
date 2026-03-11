@@ -252,7 +252,7 @@ if not st.session_state.debate_history:
     """, unsafe_allow_html=True)
 
     examples = [
-        "천지창조와 빅뱅은 같은 이야기인가?",
+        "천지창조는 정말 6일인가?",
         "루시퍼는 왜 신을 대적했나?",
         "인간은 왜 사는가?",
         "선과 악은 누가 정하는가?",
