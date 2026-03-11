@@ -108,18 +108,38 @@ PROMPTS = {
 }
 
 # ─────────────────────────────────────────
-# AI 단일 호출 함수 (CLIENT 재사용)
+# 한자/중국어 감지 함수
+# ─────────────────────────────────────────
+def has_cjk(text: str) -> bool:
+    for char in text:
+        cp = ord(char)
+        if (0x4E00 <= cp <= 0x9FFF or
+            0x3400 <= cp <= 0x4DBF or
+            0x20000 <= cp <= 0x2A6DF or
+            0x3000 <= cp <= 0x303F or
+            0xFF00 <= cp <= 0xFFEF):
+            return True
+    return False
+
+# ─────────────────────────────────────────
+# AI 단일 호출 함수 (한자 감지 시 재시도)
 # ─────────────────────────────────────────
 def call_ai(prompt_key: str, user_content: str) -> str:
-    response = CLIENT.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        max_tokens=600,
-        messages=[
-            {"role": "system", "content": PROMPTS[prompt_key]},
-            {"role": "user", "content": user_content}
-        ]
-    )
-    return response.choices[0].message.content.strip()
+    system = PROMPTS[prompt_key]
+    for attempt in range(3):
+        response = CLIENT.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            max_tokens=600,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_content}
+            ]
+        )
+        result = response.choices[0].message.content.strip()
+        if not has_cjk(result):
+            return result
+        system = "절대로 한자나 중국어를 사용하지 마세요. 오직 한국어(한글)만 사용하세요.\n\n" + system
+    return result
 
 # ─────────────────────────────────────────
 # AI 대화 루프 — 4단계
@@ -252,7 +272,7 @@ if not st.session_state.debate_history:
     """, unsafe_allow_html=True)
 
     examples = [
-        "천지창조는 정말 6일이였나?",
+        "천지창조는 정말 6일인가?",
         "루시퍼는 왜 신을 대적했나?",
         "인간은 왜 사는가?",
         "선과 악은 누가 정하는가?",
