@@ -39,7 +39,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-LANGUAGE = "한국어로 답하세요. 한자, 중국어, 일본어는 쓰지 마세요. 외국어 원문은 한글 음역과 뜻으로 설명하세요. 사실과 해석을 구분하고 확인하지 않은 출처나 원문을 지어내지 마세요."
+LANGUAGE = "한국어로 답하세요. 한자, 중국어, 일본어는 쓰지 마세요. 외국어 원문은 한글 음역과 뜻으로 설명하세요. 사실과 해석을 구분하고 확인하지 않은 출처나 원문을 지어내지 마세요. 별표나 마크다운 강조 없이 일반 문장으로 쓰고, 700자 이내에서 마지막 문장까지 완결하세요."
 PROMPTS = {
     "lyra_1": LANGUAGE + " 당신은 라이라 역할입니다. 종교학, 언어학, 신학, 역사적 관점으로 질문을 탐구하세요. 모든 질문을 억지로 종교에 연결하지 마세요. 핵심을 구체적으로 3~4문장으로 답하세요.",
     "genie": LANGUAGE + " 당신은 지니 역할입니다. 과학, 철학, 심리학, 논리적 관점에서 라이라의 답변을 검토하세요. 타당한 점은 인정하고 근거가 부족한 점이나 새로운 해석을 제시하세요. 억지 반박은 하지 마세요. 3~4문장으로 답하세요.",
@@ -64,14 +64,30 @@ def get_api_key():
 def call_ai(client, prompt_key, content, model):
     system = PROMPTS[prompt_key]
     for attempt in range(3):
-        response = client.chat.completions.create(
-            model=model, max_tokens=600,
-            messages=[{"role": "system", "content": system}, {"role": "user", "content": content}],
-        )
-        result = (response.choices[0].message.content or "").strip()
+        messages = [{"role": "system", "content": system}, {"role": "user", "content": content}]
+        result = ""
+        truncated = False
+        # 최초 요청 + 최대 두 번 이어쓰기. 사용량 폭증을 방지하는 유한 루프.
+        for continuation in range(3):
+            response = client.chat.completions.create(
+                model=model, max_tokens=2400, messages=messages,
+            )
+            choice = response.choices[0]
+            piece = choice.message.content or ""
+            result += piece
+            truncated = choice.finish_reason == "length"
+            if not truncated:
+                break
+            messages.extend([
+                {"role": "assistant", "content": piece},
+                {"role": "user", "content": "출력 한도로 답변이 끊겼습니다. 앞부분을 반복하지 말고 끊긴 지점부터 이어서 마지막 문장까지 짧게 완결하세요."},
+            ])
+        result = result.strip()
         if not result:
             raise ValueError("empty_response")
         if not has_cjk(result):
+            if truncated:
+                result += "\n\n[출력 한도로 답변이 아직 완결되지 않았습니다.]"
             return result
         system = "한자와 일본어 없이 한글로 다시 작성하세요.\n" + system
     raise ValueError("language_retry_failed")
@@ -133,7 +149,7 @@ if api_key:
                     client.close()
                 st.session_state.available_models = sorted(
                     m.id for m in models.data if getattr(m, "active", True)
-                    and not any(word in m.id.lower() for word in ("whisper", "tts", "guard", "safeguard"))
+                    and not any(word in m.id.lower() for word in ("whisper", "tts", "guard", "safeguard", "orpheus"))
                 )
                 st.session_state.model_fingerprint = fingerprint
         except Exception as exc:
