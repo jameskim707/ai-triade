@@ -1,6 +1,7 @@
 """실행: python -m streamlit run app_fixed.py"""
 import os
 import html
+import hashlib
 import streamlit as st
 from groq import Groq
 
@@ -60,11 +61,11 @@ def get_api_key():
     except (FileNotFoundError, KeyError):
         return ""
 
-def call_ai(client, prompt_key, content):
+def call_ai(client, prompt_key, content, model):
     system = PROMPTS[prompt_key]
     for attempt in range(3):
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant", max_tokens=600,
+            model=model, max_tokens=600,
             messages=[{"role": "system", "content": system}, {"role": "user", "content": content}],
         )
         result = (response.choices[0].message.content or "").strip()
@@ -75,15 +76,15 @@ def call_ai(client, prompt_key, content):
         system = "한자와 일본어 없이 한글로 다시 작성하세요.\n" + system
     raise ValueError("language_retry_failed")
 
-def run_debate(client, question, progress):
+def run_debate(client, question, progress, model):
     progress.info("💬 라이라가 답변 중...")
-    s1 = call_ai(client, "lyra_1", f"질문: {question}")
+    s1 = call_ai(client, "lyra_1", f"질문: {question}", model)
     progress.info("💬 지니가 검토 중...")
-    s2 = call_ai(client, "genie", f"질문: {question}\n\n라이라의 답변: {s1}")
+    s2 = call_ai(client, "genie", f"질문: {question}\n\n라이라의 답변: {s1}", model)
     progress.info("💬 라이라가 재반응 중...")
-    s3 = call_ai(client, "lyra_2", f"질문: {question}\n\n첫 답변: {s1}\n\n지니의 검토: {s2}")
+    s3 = call_ai(client, "lyra_2", f"질문: {question}\n\n첫 답변: {s1}\n\n지니의 검토: {s2}", model)
     progress.info("✦ 미라클이 최종 통찰 중...")
-    s4 = call_ai(client, "miracle", f"질문: {question}\n\n라이라: {s1}\n\n지니: {s2}\n\n라이라 재반응: {s3}")
+    s4 = call_ai(client, "miracle", f"질문: {question}\n\n라이라: {s1}\n\n지니: {s2}\n\n라이라 재반응: {s3}", model)
     return {"question": question, "answers": [s1, s2, s3, s4]}
 
 def render_debate(item):
@@ -117,6 +118,34 @@ for key, default in [("debate_history", []), ("question_input", ""), ("pending_q
 st.markdown('''<div class="main-header"><div class="eyebrow">AI Collaboration Team</div><div class="main-title">인생의 모든 질문,<br><span>세 개의 시선으로 탐구합니다</span></div><div class="subtitle">종교, 철학, 과학 — 라이라와 지니가 토론하고, 미라클이 통찰을 더합니다.</div><div class="team-row"><span class="badge lyra">● 라이라 · 종교/언어학</span><span class="badge genie">● 지니 · 과학/철학</span><span class="badge miracle">● 미라클 · 최종 통찰</span></div></div>''', unsafe_allow_html=True)
 st.caption("이 앱은 하나의 Groq 모델에 세 가지 역할을 부여합니다. GPT·Gemini·Claude를 직접 연결한 앱은 아닙니다.")
 api_key = get_api_key()
+selected_model = ""
+if api_key:
+    fingerprint = hashlib.sha256(api_key.encode()).hexdigest()
+    if st.button("모델 목록 새로고침"):
+        st.session_state.pop("model_fingerprint", None)
+    if st.session_state.get("model_fingerprint") != fingerprint:
+        try:
+            with st.spinner("Groq 모델 목록 확인 중..."):
+                client = Groq(api_key=api_key, timeout=15.0, max_retries=0)
+                try:
+                    models = client.models.list()
+                finally:
+                    client.close()
+                st.session_state.available_models = sorted(
+                    m.id for m in models.data if getattr(m, "active", True)
+                    and not any(word in m.id.lower() for word in ("whisper", "tts", "guard", "safeguard"))
+                )
+                st.session_state.model_fingerprint = fingerprint
+        except Exception as exc:
+            st.session_state.available_models = []
+            st.error(f"모델 목록 조회 실패: {type(exc).__name__}. API 키와 연결 설정을 확인해주세요.")
+    choices = st.session_state.get("available_models", [])
+    if choices:
+        preferred = next((m for m in ("llama-3.3-70b-versatile", "llama-3.1-8b-instant") if m in choices), choices[0])
+        selected_model = st.selectbox("토론 모델", choices, index=choices.index(preferred))
+        st.caption("목록에 표시되어도 조직 권한이나 모델 기능에 따라 대화 요청이 제한될 수 있습니다.")
+    else:
+        st.warning("사용 가능한 대화 모델을 확인하지 못했습니다. 모델 목록을 새로고침해주세요.")
 if not api_key:
     st.info('API 키를 설정하면 토론을 시작할 수 있습니다. 프로젝트의 .streamlit/secrets.toml에 GROQ_API_KEY = "실제 키"를 입력하세요. 배포 환경에서는 Secrets에 설정하세요.')
 
@@ -133,7 +162,7 @@ for item in st.session_state.debate_history:
 st.divider()
 with st.form("question_form"):
     st.text_input("질문", placeholder="답을 찾지 못한 질문이 있나요?", key="question_input", max_chars=500)
-    st.form_submit_button("탐구 ✦", on_click=submit_question, disabled=not bool(api_key))
+    st.form_submit_button("탐구 ✦", on_click=submit_question, disabled=not bool(api_key and selected_model))
 if st.session_state.notice:
     st.warning(st.session_state.notice)
 
@@ -144,7 +173,7 @@ if st.session_state.pending_question:
     try:
         client = Groq(api_key=api_key, timeout=30.0, max_retries=1)
         try:
-            result = run_debate(client, question, progress)
+            result = run_debate(client, question, progress, selected_model)
         finally:
             client.close()
         st.session_state.debate_history.append(result)
