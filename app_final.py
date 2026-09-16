@@ -23,7 +23,18 @@ st.markdown("""
 .ai-role{font-size:11px;color:#aaa9b9;margin-left:12px;}
 .ai-card-body{padding:18px 20px;line-height:1.9;color:#d4cfc5;white-space:pre-wrap;overflow-wrap:anywhere;}
 .synthesis{border-color:#66532b;background:#19170f;}
-.stButton>button{background:#c9a84c;color:#0a0a0f;border-radius:12px;font-weight:600;}
+.stButton>button,.stFormSubmitButton>button{background:#c9a84c !important;color:#0a0a0f !important;border:1px solid #c9a84c !important;border-radius:12px;font-weight:600;}
+.stButton>button p,.stFormSubmitButton>button p{color:#0a0a0f !important;}
+.stButton>button:hover,.stFormSubmitButton>button:hover{background:#e8c97a !important;border-color:#e8c97a !important;}
+.stButton>button:disabled,.stFormSubmitButton>button:disabled{background:#655733 !important;color:#ffffff !important;opacity:1 !important;}
+.stButton>button:disabled p,.stFormSubmitButton>button:disabled p{color:#ffffff !important;}
+[data-testid="stWidgetLabel"] p,[data-testid="stCaptionContainer"] p{color:#c5c5d5 !important;}
+[data-testid="stTextInput"] input{background:#161620 !important;color:#f5f3ee !important;-webkit-text-fill-color:#f5f3ee !important;caret-color:#e8c97a !important;}
+[data-testid="stTextInput"] input::placeholder{color:#aeb0c1 !important;-webkit-text-fill-color:#aeb0c1 !important;opacity:1 !important;}
+[data-testid="stTextInput"] [data-baseweb="input"]{background:#161620 !important;border-color:#676779 !important;}
+[data-testid="stMarkdownContainer"] h3{color:#e8e4dc !important;}
+[data-testid="stAlert"]{background:#202331 !important;color:#f1f1f6 !important;}
+[data-testid="stAlert"] p{color:#f1f1f6 !important;}
 </style>
 """, unsafe_allow_html=True)
 
